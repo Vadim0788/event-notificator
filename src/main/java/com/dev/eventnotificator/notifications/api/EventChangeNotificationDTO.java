@@ -9,6 +9,7 @@ import java.util.List;
 public record EventChangeNotificationDTO(
         Long eventId,
         Long ownerId,
+        String messageType,
         Long changedById,
         FieldChange<String> name,
         FieldChange<Long> maxPlaces,

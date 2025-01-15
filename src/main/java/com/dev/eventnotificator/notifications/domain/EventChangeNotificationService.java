@@ -5,6 +5,7 @@ import com.dev.eventnotificator.notifications.api.EventChangeNotificationDTO;
 import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
 import com.dev.eventnotificator.notifications.db.EventChangeNotificationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,10 +22,22 @@ public class EventChangeNotificationService {
         this.eventChangeNotificationMapper = eventChangeNotificationMapper;
     }
 
+    @Transactional
+    public EventChangeNotificationEntity findOrCreateEventChangeNotification(EventChangeNotification notification) {
+
+        var entity = notificationRepository.findById(notification.eventId())
+                .orElseGet(() -> notificationRepository.save(notificationMapper.toEntity(notification)));
+        entity.getSubscribersId().size();
+        return entity;
+
+    }
+
+
+    @Transactional
     public EventChangeNotification createEventChangeNotification(EventChangeNotification notification) {
         var savedNotification =
                 notificationRepository.save(notificationMapper.toEntity(notification));
-
+        notificationRepository.flush();
         return notificationMapper.toDomain(savedNotification);
 
     }

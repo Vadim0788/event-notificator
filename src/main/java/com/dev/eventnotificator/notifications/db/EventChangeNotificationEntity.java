@@ -1,6 +1,7 @@
 package com.dev.eventnotificator.notifications.db;
 
 import com.dev.eventnotificator.notifications.FieldChange;
+import com.dev.eventnotificator.userNotifications.db.UserNotificationEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -20,8 +21,19 @@ public class EventChangeNotificationEntity {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
+    public List<UserNotificationEntity> getUserNotifications() {
+        return userNotifications;
+    }
 
-    @Column(name = "changed_by_id", nullable = false)
+    public void setUserNotifications(List<UserNotificationEntity> userNotifications) {
+        this.userNotifications = userNotifications;
+    }
+
+    @Column(name = "message_type", nullable = false)
+    private String messageType;
+
+
+    @Column(name = "changed_by_id")
     private Long changedById;
 
     @Embedded
@@ -71,12 +83,17 @@ public class EventChangeNotificationEntity {
     @Column(name = "subscriber_id")
     private List<Long> subscribersId;
 
+    @OneToMany(mappedBy = "eventChangeNotification", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<UserNotificationEntity> userNotifications;
+
     public EventChangeNotificationEntity() {
     }
 
     public EventChangeNotificationEntity(
             Long id,
             Long eventId,
+            Long ownerId,
+            String messageType,
             FieldChange<String> name,
             FieldChange<Long> maxPlaces,
             FieldChange<OffsetDateTime> date,
@@ -87,6 +104,8 @@ public class EventChangeNotificationEntity {
     ) {
         this.id = id;
         this.eventId = eventId;
+        this.ownerId = ownerId;
+        this.messageType = messageType;
         this.name = name;
         this.maxPlaces = maxPlaces;
         this.date = date;
@@ -126,6 +145,14 @@ public class EventChangeNotificationEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 
     public FieldChange<String> getName() {

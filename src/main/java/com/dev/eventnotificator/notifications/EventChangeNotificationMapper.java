@@ -15,6 +15,7 @@ public class EventChangeNotificationMapper {
         return new EventChangeNotification(
                 entity.getEventId(),
                 entity.getOwnerId(),
+                entity.getMessageType(),
                 entity.getChangedById(),
                 entity.getName(),
                 entity.getMaxPlaces(),
@@ -33,6 +34,7 @@ public class EventChangeNotificationMapper {
         EventChangeNotificationEntity entity = new EventChangeNotificationEntity();
         entity.setEventId(event.eventId());
         entity.setOwnerId(event.ownerId());
+        entity.setMessageType(event.MessageType());
         entity.setChangedById(event.changedById());
         entity.setName(event.name());
         entity.setMaxPlaces(event.maxPlaces());
@@ -52,6 +54,7 @@ public class EventChangeNotificationMapper {
         return new EventChangeNotificationDTO(
                 event.eventId(),
                 event.ownerId(),
+                event.MessageType(),
                 event.changedById(),
                 event.name(),
                 event.maxPlaces(),
@@ -70,6 +73,7 @@ public class EventChangeNotificationMapper {
         return new EventChangeNotification(
                 dto.eventId(),
                 dto.ownerId(),
+                dto.messageType(),
                 dto.changedById(),
                 dto.name(),
                 dto.maxPlaces(),

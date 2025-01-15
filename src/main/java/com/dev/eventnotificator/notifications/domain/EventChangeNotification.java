@@ -9,6 +9,7 @@ import java.util.List;
 public record EventChangeNotification(
         Long eventId,
         Long ownerId,
+        String MessageType,
         Long changedById,
         FieldChange<String> name,
         FieldChange<Long> maxPlaces,

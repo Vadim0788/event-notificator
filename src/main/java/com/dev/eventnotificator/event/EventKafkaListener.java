@@ -1,5 +1,6 @@
 package com.dev.eventnotificator.event;
 
+import com.dev.eventnotificator.notifications.EventChangeNotificationMapper;
 import com.dev.eventnotificator.notifications.domain.EventChangeNotificationService;
 import com.dev.eventnotificator.userNotifications.domain.UserNotification;
 import com.dev.eventnotificator.userNotifications.domain.UserNotificationService;
@@ -19,11 +20,13 @@ public class EventKafkaListener {
     private final EventChangeNotificationService notificationService;
     private final UserNotificationService userNotificationService;
     private final KafkaMessageMapper kafkaMessageMapper;
+    private final EventChangeNotificationMapper notificationMapper;
 
-    public EventKafkaListener(EventChangeNotificationService notificationService, UserNotificationService userNotificationService, KafkaMessageMapper kafkaMessageMapper) {
+    public EventKafkaListener(EventChangeNotificationService notificationService, UserNotificationService userNotificationService, KafkaMessageMapper kafkaMessageMapper, EventChangeNotificationMapper notificationMapper) {
         this.notificationService = notificationService;
         this.userNotificationService = userNotificationService;
         this.kafkaMessageMapper = kafkaMessageMapper;
+        this.notificationMapper = notificationMapper;
     }
 
     @KafkaListener(topics = "event-topic", groupId = "event-notificator-group")
@@ -31,21 +34,22 @@ public class EventKafkaListener {
 
         log.info("Получено событие: {}", record.value());
         var eventChangeNotification = kafkaMessageMapper.toDomain(record.value());
+        var notificationEntity = notificationService.findOrCreateEventChangeNotification(eventChangeNotification);
+        var notification = notificationMapper.toDomain(notificationEntity);
 
-        var notification = notificationService.createEventChangeNotification(eventChangeNotification);
         log.info("Событие сохранено: {}", notification);
 
         List<UserNotification> userNotifications = notification.subscribersId().stream()
                 .map(subscriberId -> new UserNotification(
                         null,
                         subscriberId,
-                        notification.eventId(),
+                        notification,
                         LocalDateTime.now(),
-                        false // уведомление не прочитано
+                        false
                 ))
                 .toList();
 
-        userNotificationService.saveAll(userNotifications);
+        userNotificationService.saveAll(userNotifications, notificationEntity);
     }
 }
 

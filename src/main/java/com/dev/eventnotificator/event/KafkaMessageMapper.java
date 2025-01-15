@@ -12,6 +12,7 @@ public class KafkaMessageMapper {
         return new EventChangeNotification(
                 message.eventId(),
                 message.ownerId(),
+                message.messageType().name(),
                 message.changedById(),
                 message.name(),
                 message.maxPlaces(),

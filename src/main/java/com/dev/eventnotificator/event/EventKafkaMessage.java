@@ -16,6 +16,7 @@ public record EventKafkaMessage(
         FieldChange<BigDecimal> cost,
         FieldChange<Integer> duration,
         FieldChange<Long> locationId,
-        List<Long> subscribersId
+        List<Long> subscribersId,
+        MessageType messageType
 ) {
 }

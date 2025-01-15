@@ -48,7 +48,7 @@ public class JwtTokenManager {
     public Long getIdFromJwt(String jwt) {
 
         Claims claims = Jwts.parser()
-                .setSigningKey(key) // Преобразуем ключ в массив байтов
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jwt)
                 .getBody();
@@ -58,7 +58,7 @@ public class JwtTokenManager {
 
     public String getRoleFromToken(String jwtToken) {
         Claims claims = Jwts.parser()
-                .setSigningKey(key) // Преобразуем ключ в массив байтов
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jwtToken)
                 .getBody();

@@ -1,5 +1,6 @@
 package com.dev.eventnotificator.userNotifications.db;
 
+import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,8 +16,9 @@ public class UserNotificationEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "event_id", nullable = false)
-    private Long eventId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "event_id", nullable = false)
+    private EventChangeNotificationEntity eventChangeNotification;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -27,9 +29,14 @@ public class UserNotificationEntity {
     public UserNotificationEntity() {
     }
 
-    public UserNotificationEntity(Long userId, Long eventId, LocalDateTime createdAt, boolean read) {
+    public UserNotificationEntity(
+            Long userId,
+            EventChangeNotificationEntity eventChangeNotification,
+            LocalDateTime createdAt,
+            boolean read
+    ) {
         this.userId = userId;
-        this.eventId = eventId;
+        this.eventChangeNotification = eventChangeNotification;
         this.createdAt = createdAt;
         this.read = read;
     }
@@ -50,12 +57,12 @@ public class UserNotificationEntity {
         this.userId = userId;
     }
 
-    public Long getEventId() {
-        return eventId;
+    public EventChangeNotificationEntity getEventId() {
+        return eventChangeNotification;
     }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
+    public void setEventId(EventChangeNotificationEntity eventChangeNotification) {
+        this.eventChangeNotification = eventChangeNotification;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -72,5 +79,13 @@ public class UserNotificationEntity {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public EventChangeNotificationEntity getEventChangeNotification() {
+        return eventChangeNotification;
+    }
+
+    public void setEventChangeNotification(EventChangeNotificationEntity eventChangeNotification) {
+        this.eventChangeNotification = eventChangeNotification;
     }
 }

@@ -19,7 +19,7 @@ public class NotificationCleanupScheduler {
     @Scheduled(cron = "${scheduler.cleanup.cron}")
     public void cleanOldNotifications() {
         log.info("Starting cleanup of old notifications...");
-        int deletedCount = userNotificationService.deleteNotificationsOlderThanDays(7);
+        int deletedCount = userNotificationService.deleteOldNotificationsAndEvents(7);
         log.info("Cleanup complete. Deleted {} notifications.", deletedCount);
     }
 }
