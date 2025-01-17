@@ -1,7 +1,7 @@
 package com.dev.eventnotificator.event;
 
-import com.dev.eventnotificator.notifications.EventChangeNotificationMapper;
-import com.dev.eventnotificator.notifications.domain.EventChangeNotificationService;
+import com.dev.eventnotificator.notifications.NotificationMapper;
+import com.dev.eventnotificator.notifications.domain.NotificationService;
 import com.dev.eventnotificator.userNotifications.domain.UserNotification;
 import com.dev.eventnotificator.userNotifications.domain.UserNotificationService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,19 +10,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class EventKafkaListener {
 
     private static final Logger log = LoggerFactory.getLogger(EventKafkaListener.class);
-    private final EventChangeNotificationService notificationService;
+    private final NotificationService notificationService;
     private final UserNotificationService userNotificationService;
     private final KafkaMessageMapper kafkaMessageMapper;
-    private final EventChangeNotificationMapper notificationMapper;
+    private final NotificationMapper notificationMapper;
 
-    public EventKafkaListener(EventChangeNotificationService notificationService, UserNotificationService userNotificationService, KafkaMessageMapper kafkaMessageMapper, EventChangeNotificationMapper notificationMapper) {
+    public EventKafkaListener(NotificationService notificationService, UserNotificationService userNotificationService, KafkaMessageMapper kafkaMessageMapper, NotificationMapper notificationMapper) {
         this.notificationService = notificationService;
         this.userNotificationService = userNotificationService;
         this.kafkaMessageMapper = kafkaMessageMapper;
@@ -44,7 +43,6 @@ public class EventKafkaListener {
                         null,
                         subscriberId,
                         notification,
-                        LocalDateTime.now(),
                         false
                 ))
                 .toList();

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public record EventChangeNotificationDTO(
+public record NotificationDTO(
         Long eventId,
         Long ownerId,
         String messageType,

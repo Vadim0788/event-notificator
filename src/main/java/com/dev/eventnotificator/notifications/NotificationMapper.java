@@ -1,20 +1,20 @@
 package com.dev.eventnotificator.notifications;
 
-import com.dev.eventnotificator.notifications.api.EventChangeNotificationDTO;
-import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
-import com.dev.eventnotificator.notifications.domain.EventChangeNotification;
+import com.dev.eventnotificator.notifications.api.NotificationDTO;
+import com.dev.eventnotificator.notifications.domain.Notification;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventChangeNotificationMapper {
+public class NotificationMapper {
 
-    public EventChangeNotification toDomain(EventChangeNotificationEntity entity) {
+    public Notification toDomain(com.dev.eventnotificator.notifications.db.Notification entity) {
         if (entity == null) {
             return null;
         }
-        return new EventChangeNotification(
+        return new Notification(
                 entity.getEventId(),
                 entity.getOwnerId(),
+                entity.getCreatedAt(),
                 entity.getMessageType(),
                 entity.getChangedById(),
                 entity.getName(),
@@ -27,13 +27,14 @@ public class EventChangeNotificationMapper {
         );
     }
 
-    public EventChangeNotificationEntity toEntity(EventChangeNotification event) {
+    public com.dev.eventnotificator.notifications.db.Notification toEntity(Notification event) {
         if (event == null) {
             return null;
         }
-        EventChangeNotificationEntity entity = new EventChangeNotificationEntity();
+        com.dev.eventnotificator.notifications.db.Notification entity = new com.dev.eventnotificator.notifications.db.Notification();
         entity.setEventId(event.eventId());
         entity.setOwnerId(event.ownerId());
+        entity.setCreatedAt(event.createdAt());
         entity.setMessageType(event.MessageType());
         entity.setChangedById(event.changedById());
         entity.setName(event.name());
@@ -47,11 +48,11 @@ public class EventChangeNotificationMapper {
     }
 
 
-    public EventChangeNotificationDTO toDto(EventChangeNotification event) {
+    public NotificationDTO toDto(Notification event) {
         if (event == null) {
             return null;
         }
-        return new EventChangeNotificationDTO(
+        return new NotificationDTO(
                 event.eventId(),
                 event.ownerId(),
                 event.MessageType(),
@@ -63,25 +64,6 @@ public class EventChangeNotificationMapper {
                 event.duration(),
                 event.locationId(),
                 event.subscribersId()
-        );
-    }
-
-    public EventChangeNotification toDomain(EventChangeNotificationDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        return new EventChangeNotification(
-                dto.eventId(),
-                dto.ownerId(),
-                dto.messageType(),
-                dto.changedById(),
-                dto.name(),
-                dto.maxPlaces(),
-                dto.date(),
-                dto.cost(),
-                dto.duration(),
-                dto.locationId(),
-                dto.subscribersId()
         );
     }
 

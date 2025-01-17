@@ -1,14 +1,11 @@
 package com.dev.eventnotificator.userNotifications.domain;
 
-import com.dev.eventnotificator.notifications.domain.EventChangeNotification;
-
-import java.time.LocalDateTime;
+import com.dev.eventnotificator.notifications.domain.Notification;
 
 public record UserNotification(
         Long id,
         Long userId,
-        EventChangeNotification eventChangeNotification,
-        LocalDateTime createdAt,
+        Notification notification,
         boolean isRead
 ) {
 }

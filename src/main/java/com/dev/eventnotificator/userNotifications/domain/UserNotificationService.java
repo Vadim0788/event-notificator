@@ -1,7 +1,7 @@
 package com.dev.eventnotificator.userNotifications.domain;
 
-import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
-import com.dev.eventnotificator.notifications.db.EventChangeNotificationRepository;
+import com.dev.eventnotificator.notifications.db.Notification;
+import com.dev.eventnotificator.notifications.db.NotificationRepository;
 import com.dev.eventnotificator.userNotifications.UserNotificationMapper;
 import com.dev.eventnotificator.userNotifications.db.UserNotificationEntity;
 import com.dev.eventnotificator.userNotifications.db.UserNotificationRepository;
@@ -20,20 +20,20 @@ public class UserNotificationService {
     private static final Logger log = LoggerFactory.getLogger(UserNotificationService.class);
     private final UserNotificationRepository userNotificationRepository;
     private final UserNotificationMapper userNotificationMapper;
-    private final EventChangeNotificationRepository eventChangeNotificationRepository;
+    private final NotificationRepository notificationRepository;
 
 
     public UserNotificationService(
             UserNotificationRepository userNotificationRepository,
             UserNotificationMapper userNotificationMapper,
-            EventChangeNotificationRepository eventChangeNotificationRepository
+            NotificationRepository notificationRepository
     ) {
         this.userNotificationRepository = userNotificationRepository;
         this.userNotificationMapper = userNotificationMapper;
-        this.eventChangeNotificationRepository = eventChangeNotificationRepository;
+        this.notificationRepository = notificationRepository;
     }
 
-    public void saveAll(List<UserNotification> userNotifications, EventChangeNotificationEntity notificationEntity) {
+    public void saveAll(List<UserNotification> userNotifications, Notification notificationEntity) {
 
         List<UserNotificationEntity> userNotificationEntities = userNotifications.stream()
                 .map(userNotificationMapper::toEntity)
@@ -53,19 +53,11 @@ public class UserNotificationService {
                 .toList();
     }
 
-    public List<UserNotification> findNotificationsByUserId(Long usrId) {
-        List<UserNotificationEntity> userNotificationEntities = userNotificationRepository.findAllByUserId(usrId);
-
-        return userNotificationEntities.stream()
-                .map(userNotificationMapper::toDomain)
-                .toList();
-    }
-
     @Transactional
     public void markNotificationsAsRead(Long userId, List<Long> notificationIds) {
 
-        List<EventChangeNotificationEntity> eventChangeNotifications =
-                eventChangeNotificationRepository.findAllById(notificationIds);
+        List<Notification> eventChangeNotifications =
+                notificationRepository.findAllById(notificationIds);
 
         if (eventChangeNotifications.isEmpty()) {
             log.info("No events found for notification IDs: {}", notificationIds);
@@ -88,31 +80,12 @@ public class UserNotificationService {
         log.info("Notifications marked as read for userId: {} and notificationIds: {}", userId, notificationIds);
     }
 
-    public int deleteNotificationsOlderThanDays(int days) {
-        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
-        log.info("Deleting notifications older than {}", cutoffDate);
-        int deletedCount = userNotificationRepository.deleteByCreatedAtBefore(cutoffDate);
-        log.info("{} notifications deleted.", deletedCount);
-        return deletedCount;
-    }
-
     @Transactional
-    public int deleteOldNotificationsAndEvents(int days) {
+    public void deleteOldNotificationsAndEvents(int days) {
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(days);
         log.info("Deleting notifications and related events older than {}", cutoffDate);
 
-        List<UserNotificationEntity> oldNotifications =
-                userNotificationRepository.findByCreatedAtBefore(cutoffDate);
+        notificationRepository.deleteAllByCreatedAtBefore(cutoffDate);
 
-        List<EventChangeNotificationEntity> relatedEvents = oldNotifications.stream()
-                .map(UserNotificationEntity::getEventChangeNotification)
-                .distinct()
-                .toList();
-
-        eventChangeNotificationRepository.deleteAll(relatedEvents);
-
-        log.info("Deleted {} notifications and their related events.", oldNotifications.size());
-
-        return oldNotifications.size();
     }
 }

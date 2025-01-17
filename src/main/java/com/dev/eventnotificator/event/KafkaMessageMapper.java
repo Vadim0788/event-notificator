@@ -1,17 +1,20 @@
 package com.dev.eventnotificator.event;
 
-import com.dev.eventnotificator.notifications.domain.EventChangeNotification;
+import com.dev.eventnotificator.notifications.domain.Notification;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class KafkaMessageMapper {
-    public EventChangeNotification toDomain(EventKafkaMessage message) {
+    public Notification toDomain(EventKafkaMessage message) {
         if (message == null) {
             return null;
         }
-        return new EventChangeNotification(
+        return new Notification(
                 message.eventId(),
                 message.ownerId(),
+                LocalDateTime.now(),
                 message.messageType().name(),
                 message.changedById(),
                 message.name(),

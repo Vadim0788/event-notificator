@@ -1,9 +1,7 @@
 package com.dev.eventnotificator.userNotifications.db;
 
-import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
+import com.dev.eventnotificator.notifications.db.Notification;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_notifications")
@@ -17,11 +15,8 @@ public class UserNotificationEntity {
     private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "event_id", nullable = false)
-    private EventChangeNotificationEntity eventChangeNotification;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @JoinColumn(name = "event_change_notifiction_id", nullable = false)
+    private Notification eventChangeNotification;
 
     @Column(name = "is_read", nullable = false)
     private boolean read;
@@ -31,13 +26,12 @@ public class UserNotificationEntity {
 
     public UserNotificationEntity(
             Long userId,
-            EventChangeNotificationEntity eventChangeNotification,
-            LocalDateTime createdAt,
+            Notification eventChangeNotification,
             boolean read
     ) {
         this.userId = userId;
         this.eventChangeNotification = eventChangeNotification;
-        this.createdAt = createdAt;
+
         this.read = read;
     }
 
@@ -57,20 +51,12 @@ public class UserNotificationEntity {
         this.userId = userId;
     }
 
-    public EventChangeNotificationEntity getEventId() {
+    public Notification getEventId() {
         return eventChangeNotification;
     }
 
-    public void setEventId(EventChangeNotificationEntity eventChangeNotification) {
+    public void setEventId(Notification eventChangeNotification) {
         this.eventChangeNotification = eventChangeNotification;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public boolean isRead() {
@@ -81,11 +67,11 @@ public class UserNotificationEntity {
         this.read = read;
     }
 
-    public EventChangeNotificationEntity getEventChangeNotification() {
+    public Notification getEventChangeNotification() {
         return eventChangeNotification;
     }
 
-    public void setEventChangeNotification(EventChangeNotificationEntity eventChangeNotification) {
+    public void setEventChangeNotification(Notification eventChangeNotification) {
         this.eventChangeNotification = eventChangeNotification;
     }
 }

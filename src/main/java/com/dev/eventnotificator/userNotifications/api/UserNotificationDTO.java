@@ -6,7 +6,6 @@ public record UserNotificationDTO(
         Long id,
         Long userId,
         Long eventId,
-        LocalDateTime createdAt,
         boolean isRead
 ) {
 }

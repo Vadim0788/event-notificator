@@ -1,7 +1,7 @@
 package com.dev.eventnotificator.userNotifications;
 
-import com.dev.eventnotificator.notifications.EventChangeNotificationMapper;
-import com.dev.eventnotificator.notifications.db.EventChangeNotificationEntity;
+import com.dev.eventnotificator.notifications.NotificationMapper;
+import com.dev.eventnotificator.notifications.db.Notification;
 import com.dev.eventnotificator.userNotifications.db.UserNotificationEntity;
 import com.dev.eventnotificator.userNotifications.domain.UserNotification;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserNotificationMapper {
 
-    private final EventChangeNotificationMapper eventChangeNotificationMapper;
+    private final NotificationMapper notificationMapper;
 
-    public UserNotificationMapper(EventChangeNotificationMapper eventChangeNotificationMapper) {
-        this.eventChangeNotificationMapper = eventChangeNotificationMapper;
+    public UserNotificationMapper(NotificationMapper notificationMapper) {
+        this.notificationMapper = notificationMapper;
     }
 
     public UserNotification toDomain(UserNotificationEntity entity) {
@@ -22,8 +22,7 @@ public class UserNotificationMapper {
         return new UserNotification(
                 entity.getId(),
                 entity.getUserId(),
-                eventChangeNotificationMapper.toDomain(entity.getEventChangeNotification()),
-                entity.getCreatedAt(),
+                notificationMapper.toDomain(entity.getEventChangeNotification()),
                 entity.isRead()
         );
     }
@@ -32,12 +31,11 @@ public class UserNotificationMapper {
         if (domain == null) {
             return null;
         }
-        EventChangeNotificationEntity eventChangeNotificationEntity =
-                eventChangeNotificationMapper.toEntity(domain.eventChangeNotification());
+        Notification notification =
+                notificationMapper.toEntity(domain.notification());
         return new UserNotificationEntity(
                 domain.userId(),
-                eventChangeNotificationEntity,
-                domain.createdAt(),
+                notification,
                 domain.isRead()
         );
     }

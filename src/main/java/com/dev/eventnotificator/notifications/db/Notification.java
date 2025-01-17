@@ -5,12 +5,13 @@ import com.dev.eventnotificator.userNotifications.db.UserNotificationEntity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "event_change_notification")
-public class EventChangeNotificationEntity {
+@Table(name = "notification")
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,13 +22,8 @@ public class EventChangeNotificationEntity {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
-    public List<UserNotificationEntity> getUserNotifications() {
-        return userNotifications;
-    }
-
-    public void setUserNotifications(List<UserNotificationEntity> userNotifications) {
-        this.userNotifications = userNotifications;
-    }
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "message_type", nullable = false)
     private String messageType;
@@ -86,13 +82,14 @@ public class EventChangeNotificationEntity {
     @OneToMany(mappedBy = "eventChangeNotification", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserNotificationEntity> userNotifications;
 
-    public EventChangeNotificationEntity() {
+    public Notification() {
     }
 
-    public EventChangeNotificationEntity(
+    public Notification(
             Long id,
             Long eventId,
             Long ownerId,
+            LocalDateTime createdAt,
             String messageType,
             FieldChange<String> name,
             FieldChange<Long> maxPlaces,
@@ -105,6 +102,7 @@ public class EventChangeNotificationEntity {
         this.id = id;
         this.eventId = eventId;
         this.ownerId = ownerId;
+        this.createdAt = createdAt;
         this.messageType = messageType;
         this.name = name;
         this.maxPlaces = maxPlaces;
@@ -145,6 +143,14 @@ public class EventChangeNotificationEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getMessageType() {
@@ -210,4 +216,14 @@ public class EventChangeNotificationEntity {
     public void setSubscribersId(List<Long> subscribersId) {
         this.subscribersId = subscribersId;
     }
+
+    public List<UserNotificationEntity> getUserNotifications() {
+        return userNotifications;
+    }
+
+    public void setUserNotifications(List<UserNotificationEntity> userNotifications) {
+        this.userNotifications = userNotifications;
+    }
+
+
 }

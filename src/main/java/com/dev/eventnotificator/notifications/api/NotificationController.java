@@ -1,6 +1,6 @@
 package com.dev.eventnotificator.notifications.api;
 
-import com.dev.eventnotificator.notifications.EventChangeNotificationMapper;
+import com.dev.eventnotificator.notifications.NotificationMapper;
 
 import com.dev.eventnotificator.security.user.UserUtil;
 import com.dev.eventnotificator.userNotifications.domain.UserNotification;
@@ -16,33 +16,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notifications")
-public class EventChangeNotificationController {
-    private static final Logger log = LoggerFactory.getLogger(EventChangeNotificationController.class);
+public class NotificationController {
+    private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
     private final UserUtil userUtil;
     private final UserNotificationService userNotificationService;
-    private final EventChangeNotificationMapper eventChangeNotificationMapper;
+    private final NotificationMapper notificationMapper;
 
-    public EventChangeNotificationController(
+    public NotificationController(
             UserUtil userUtil,
             UserNotificationService userNotificationService,
-            EventChangeNotificationMapper eventChangeNotificationMapper
+            NotificationMapper notificationMapper
     ) {
         this.userUtil = userUtil;
         this.userNotificationService = userNotificationService;
-        this.eventChangeNotificationMapper = eventChangeNotificationMapper;
+        this.notificationMapper = notificationMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<EventChangeNotificationDTO>> getUnreadNotifications() {
+    public ResponseEntity<List<NotificationDTO>> getUnreadNotifications() {
         log.info("Received request to get unread notifications for the current user");
         Long userId = userUtil.getCurrentUserId();
         List<UserNotification> unreadNotifications = userNotificationService.getUnreadNotifications(userId);
 
-        List<EventChangeNotificationDTO> eventChangeNotificationDTOS = unreadNotifications.stream()
-                .map(UserNotification::eventChangeNotification)
-                .map(eventChangeNotificationMapper::toDto)
+        List<NotificationDTO> notificationDTOS = unreadNotifications.stream()
+                .map(UserNotification::notification)
+                .map(notificationMapper::toDto)
                 .toList();
 
-        return ResponseEntity.ok(eventChangeNotificationDTOS);
+        return ResponseEntity.ok(notificationDTOS);
     }
 }
